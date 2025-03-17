@@ -12,8 +12,8 @@ redis_client = redis.StrictRedis(host='localhost', port=6379, db=0, decode_respo
 # SMTP configuration
 SMTP_SERVER = 'smtp.gmail.com'  # Change based on your email provider
 SMTP_PORT = 587
-EMAIL_SENDER = 'ealiladavan17@gmail.com'
-EMAIL_PASSWORD = 'qeur ddri bhur ispr'
+EMAIL_SENDER = 'example@gmail.com'
+EMAIL_PASSWORD = 'APP_Password'
 
 def send_email(email, otp):
     try:
