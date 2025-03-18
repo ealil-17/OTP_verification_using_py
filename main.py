@@ -1,22 +1,41 @@
 import random
 import smtplib
 import redis
+import os
 from flask import Flask, request, jsonify
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 # Flask app setup
 app = Flask(__name__)
 
-# Redis connection
-redis_client = redis.StrictRedis(host='localhost', port=6379, db=0, decode_responses=True)
+# Get configuration from environment variables
+REDIS_HOST = os.environ.get('REDIS_HOST', 'localhost')
+REDIS_PORT = int(os.environ.get('REDIS_PORT', 6379))
+REDIS_DB = int(os.environ.get('REDIS_DB', 0))
 
-# SMTP configuration
-SMTP_SERVER = 'smtp.gmail.com'  # Change based on your email provider
-SMTP_PORT = 587
-EMAIL_SENDER = 'example@gmail.com'
-EMAIL_PASSWORD = 'APP_Password'
+SMTP_SERVER = os.environ.get('SMTP_SERVER', 'smtp.gmail.com')
+SMTP_PORT = int(os.environ.get('SMTP_PORT', 587))
+EMAIL_SENDER = os.environ.get('EMAIL_SENDER')
+EMAIL_PASSWORD = os.environ.get('EMAIL_PASSWORD')
+
+# Redis connection
+redis_client = redis.StrictRedis(
+    host=REDIS_HOST, 
+    port=REDIS_PORT, 
+    db=REDIS_DB, 
+    decode_responses=True
+)
 
 def send_email(email, otp):
     try:
+        # Validate email credentials are available
+        if not EMAIL_SENDER or not EMAIL_PASSWORD:
+            print("Missing email credentials in environment variables")
+            return False
+            
         with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:
             server.starttls()
             server.login(EMAIL_SENDER, EMAIL_PASSWORD)
