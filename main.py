@@ -81,5 +81,14 @@ def verify_otp():
     else:
         return jsonify({'message': 'Invalid or expired OTP'}), 400
 
+# Add a simple health check endpoint
+@app.route('/', methods=['GET'])
+def health_check():
+    return jsonify({'status': 'healthy', 'message': 'OTP service is running'}), 200
+
 if __name__ == '__main__':
-    app.run(debug=True)
+    # Get port from environment variable (Render sets this)
+    port = int(os.environ.get('PORT', 5000))
+    
+    # Important: bind to 0.0.0.0 instead of default 127.0.0.1
+    app.run(host='0.0.0.0', port=port, debug=False)
